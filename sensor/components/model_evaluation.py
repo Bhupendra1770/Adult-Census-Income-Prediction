@@ -47,12 +47,15 @@ class ModelEvaluation:
             transformer_path = self.model_resolver.get_latest_transformer_path()
             model_path = self.model_resolver.get_latest_model_path()
             target_encoder_path = self.model_resolver.get_latest_target_encoder_path()
+            input_feature_encoder_path = self.model_resolver.get_latest_input_feature_encoder_path()
+    
 
             logging.info("Previous trained objects of transformer, model and target encoder")
             #Previous trained  objects
             transformer = load_object(file_path=transformer_path)
             model = load_object(file_path=model_path)
             target_encoder = load_object(file_path=target_encoder_path)
+            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
             
 
             logging.info("Currently trained model objects")
@@ -60,12 +63,27 @@ class ModelEvaluation:
             current_transformer = load_object(file_path=self.data_transformation_artifact.transform_object_path)
             current_model  = load_object(file_path=self.model_trainer_artifact.model_path)
             current_target_encoder = load_object(file_path=self.data_transformation_artifact.target_encoder_path)
+            current_input_feature_encoder = load_object(file_path=self.data_transformation_artifact.input_feature_encoder_path)
             
 
 
-            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
+            ##test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)  #original 
+            test_df = pd.read_csv(self.data_transformation_artifact.transformed_test_path)  #testing purpose
+            
+            
             target_df = test_df[TARGET_COLUMN]
             y_true =target_encoder.transform(target_df)
+            #########################################################################################
+            #cat_col=[]
+            #for i in test_df.columns:
+                #if test_df[i].dtype=='object':
+                    #cat_col.append(i) 
+
+            #for i in cat_col:
+                #test_df[i]= input_feature_encoder.fit_transform(test_df[i])          
+            #########################################################################################
+
+
             # accuracy using previous trained model
             
             input_feature_name = list(transformer.feature_names_in_)

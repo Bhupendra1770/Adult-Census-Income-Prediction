@@ -3,11 +3,12 @@ from sensor.exception import SensorException
 from sensor.logger import logging
 from datetime import datetime
 
-FILE_NAME = "sensor.csv"
+FILE_NAME = "adult.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
 TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
 TARGET_ENCODER_OBJECT_FILE_NAME = "target_encoder.pkl"
+INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME = "input_target_encoder.pkl"
 MODEL_FILE_NAME = "model.pkl"
 
 class TrainingPipelineConfig:
@@ -23,8 +24,8 @@ class DataIngestionConfig:
 
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
         try:
-            self.database_name="aps"
-            self.collection_name="sensor"
+            self.database_name="Adult_Census"
+            self.collection_name="Adult"
             self.data_ingestion_dir = os.path.join(training_pipeline_config.artifact_dir , "data_ingestion")
             self.feature_store_file_path = os.path.join(self.data_ingestion_dir,"feature_store",FILE_NAME)
             self.train_file_path = os.path.join(self.data_ingestion_dir,"dataset",TRAIN_FILE_NAME)
@@ -55,6 +56,7 @@ class DataTransformationConfig:
         self.transformed_train_path =  os.path.join(self.data_transformation_dir,"transformed",TRAIN_FILE_NAME.replace("csv","npz"))
         self.transformed_test_path =os.path.join(self.data_transformation_dir,"transformed",TEST_FILE_NAME.replace("csv","npz"))
         self.target_encoder_path = os.path.join(self.data_transformation_dir,"target_encoder",TARGET_ENCODER_OBJECT_FILE_NAME)
+        self.input_feature_encoder_path= os.path.join(self.data_transformation_dir,"input_feature_encoder",INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME)
 
 class ModelTrainerConfig:
 
@@ -78,3 +80,4 @@ class ModelPusherConfig:
         self.pusher_model_path = os.path.join(self.pusher_model_dir,MODEL_FILE_NAME)
         self.pusher_transformer_path = os.path.join(self.pusher_model_dir,TRANSFORMER_OBJECT_FILE_NAME)
         self.pusher_target_encoder_path = os.path.join(self.pusher_model_dir,TARGET_ENCODER_OBJECT_FILE_NAME)
+        self.pusher_input_feature_encoder_path = os.path.join(self.pusher_model_dir,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME)

@@ -17,6 +17,7 @@ class DataTransformationArtifact:
     transformed_train_path:str
     transformed_test_path:str
     target_encoder_path:str
+    input_feature_encoder_path:str
 
 @dataclass
 class ModelTrainerArtifact:

@@ -6,6 +6,7 @@ import os,sys
 from sklearn.pipeline import Pipeline
 import pandas as pd
 from sensor import utils
+from sklearn import preprocessing
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from imblearn.combine import SMOTETomek
@@ -47,21 +48,38 @@ class DataTransformation:
             #reading training and testing file
             train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
+
             
             #selecting input feature for train and test dataframe
             input_feature_train_df=train_df.drop(TARGET_COLUMN,axis=1)
             input_feature_test_df=test_df.drop(TARGET_COLUMN,axis=1)
 
+
+
+            #using labelencoder converting cat columns to numerical
+            cat_col=[]
+            for i in input_feature_train_df.columns:
+                if input_feature_train_df[i].dtype=='object':
+                    cat_col.append(i)
+
+
+
+            label_encoder1 = preprocessing.LabelEncoder()
+            for i in cat_col:
+                input_feature_train_df[i]= label_encoder1.fit_transform(input_feature_train_df[i])
+            for i in cat_col:               
+                input_feature_test_df[i]= label_encoder1.fit_transform(input_feature_test_df[i])
+
             #selecting target feature for train and test dataframe
             target_feature_train_df = train_df[TARGET_COLUMN]
             target_feature_test_df = test_df[TARGET_COLUMN]
 
-            label_encoder = LabelEncoder()
-            label_encoder.fit(target_feature_train_df)
+            label_encoder2 = LabelEncoder()
+            label_encoder2.fit(target_feature_train_df)
 
             #transformation on target columns
-            target_feature_train_arr = label_encoder.transform(target_feature_train_df)
-            target_feature_test_arr = label_encoder.transform(target_feature_test_df)
+            target_feature_train_arr = label_encoder2.transform(target_feature_train_df)
+            target_feature_test_arr = label_encoder2.transform(target_feature_test_df)
 
             transformation_pipleine = DataTransformation.get_data_transformer_object()
             transformation_pipleine.fit(input_feature_train_df)
@@ -97,7 +115,9 @@ class DataTransformation:
              obj=transformation_pipleine)
 
             utils.save_object(file_path=self.data_transformation_config.target_encoder_path,
-            obj=label_encoder)
+            obj=label_encoder2)
+
+            utils.save_object(file_path=self.data_transformation_config.input_feature_encoder_path, obj=label_encoder1)
 
 
 
@@ -105,9 +125,10 @@ class DataTransformation:
                 transform_object_path=self.data_transformation_config.transform_object_path,
                 transformed_train_path = self.data_transformation_config.transformed_train_path,
                 transformed_test_path = self.data_transformation_config.transformed_test_path,
-                target_encoder_path = self.data_transformation_config.target_encoder_path
-
-            )
+                target_encoder_path = self.data_transformation_config.target_encoder_path,
+                input_feature_encoder_path = self.data_transformation_config.input_feature_encoder_path
+                
+                )
 
             logging.info(f"Data transformation object {data_transformation_artifact}")
             return data_transformation_artifact

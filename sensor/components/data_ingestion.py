@@ -31,6 +31,22 @@ class DataIngestion:
             #replace na with Nan
             df.replace(to_replace="na",value=np.NAN,inplace=True)
 
+            #cleaning string in object columns
+            for i in df.columns:
+                if df[i].dtype=='object':
+                    df[i] = df[i].str.strip()
+
+            #cleaning rows
+            l=[]
+            for i in df.columns:
+                for j in range(df.shape[0]):
+                    if df[i][j]=='?':
+                        l.append(j)
+            df.drop(index=l,inplace=True)  
+
+            #dropping some columns
+            df.drop('fnlwgt',axis=1,inplace=True)      
+
             #Save data in feature store
             logging.info("Create feature store folder if not available")
             #Create feature store folder if not available

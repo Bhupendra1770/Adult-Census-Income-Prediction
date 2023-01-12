@@ -1,5 +1,5 @@
 import os
-from sensor.entity.config_entity import TRANSFORMER_OBJECT_FILE_NAME,MODEL_FILE_NAME,TARGET_ENCODER_OBJECT_FILE_NAME
+from sensor.entity.config_entity import TRANSFORMER_OBJECT_FILE_NAME,MODEL_FILE_NAME,TARGET_ENCODER_OBJECT_FILE_NAME,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME
 from glob import glob
 from typing import Optional
 import os
@@ -9,12 +9,14 @@ class ModelResolver:
     def __init__(self,model_registry:str = "saved_models",
                 transformer_dir_name="transformer",
                 target_encoder_dir_name = "target_encoder",
+                input_feature_encoder_dir_name = "input_feature_encoder",
                 model_dir_name = "model"):
 
         self.model_registry=model_registry
         os.makedirs(self.model_registry,exist_ok=True)
         self.transformer_dir_name = transformer_dir_name
         self.target_encoder_dir_name=target_encoder_dir_name
+        self.input_feature_encoder_dir_name = input_feature_encoder_dir_name
         self.model_dir_name=model_dir_name
 
 
@@ -47,12 +49,23 @@ class ModelResolver:
         except Exception as e:
             raise e
 
+
     def get_latest_target_encoder_path(self):
         try:
             latest_dir = self.get_latest_dir_path()
             if latest_dir is None:
                 raise Exception(f"Target encoder is not available")
             return os.path.join(latest_dir,self.target_encoder_dir_name,TARGET_ENCODER_OBJECT_FILE_NAME)
+        except Exception as e:
+            raise e
+
+
+    def get_latest_input_feature_encoder_path(self):
+        try:
+            latest_dir = self.get_latest_dir_path()
+            if latest_dir is None:
+                raise Exception(f"input_feature_encoder is not available")
+            return os.path.join(latest_dir,self.input_feature_encoder_dir_name,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME)
         except Exception as e:
             raise e
 
@@ -87,6 +100,13 @@ class ModelResolver:
             return os.path.join(latest_dir,self.target_encoder_dir_name,TARGET_ENCODER_OBJECT_FILE_NAME)
         except Exception as e:
             raise e
+
+    def get_latest_save_input_feature_encoder_path(self):
+        try:
+            latest_dir = self.get_latest_save_dir_path()
+            return os.path.join(latest_dir,self.input_feature_encoder_dir_name,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME)
+        except Exception as e:
+            raise e        
 
 
     

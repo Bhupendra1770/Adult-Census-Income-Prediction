@@ -26,12 +26,14 @@ class ModelPusher:
             transformer = load_object(file_path=self.data_transformation_artifact.transform_object_path)
             model = load_object(file_path=self.model_trainer_artifact.model_path)
             target_encoder = load_object(file_path=self.data_transformation_artifact.target_encoder_path)
+            input_feature_encoder = load_object(file_path=self.data_transformation_artifact.input_feature_encoder_path)
 
             #model pusher dir
             logging.info(f"Saving model into model pusher directory")
             save_object(file_path=self.model_pusher_config.pusher_transformer_path, obj=transformer)
             save_object(file_path=self.model_pusher_config.pusher_model_path, obj=model)
             save_object(file_path=self.model_pusher_config.pusher_target_encoder_path, obj=target_encoder)
+            save_object(file_path=self.model_pusher_config.pusher_input_feature_encoder_path, obj=input_feature_encoder)
 
 
             #saved model dir
@@ -39,6 +41,7 @@ class ModelPusher:
             transformer_path=self.model_resolver.get_latest_save_transformer_path()
             model_path=self.model_resolver.get_latest_save_model_path()
             target_encoder_path=self.model_resolver.get_latest_save_target_encoder_path()
+
 
             save_object(file_path=transformer_path, obj=transformer)
             save_object(file_path=model_path, obj=model)
