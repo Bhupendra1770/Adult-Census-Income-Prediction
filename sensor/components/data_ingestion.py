@@ -45,7 +45,7 @@ class DataIngestion:
             df.drop(index=l,inplace=True)  
 
             #dropping some columns
-            df.drop('fnlwgt',axis=1,inplace=True)      
+            df.drop(['fnlwgt','capital-gain','capital-loss'],axis=1,inplace=True)      
 
             #Save data in feature store
             logging.info("Create feature store folder if not available")
