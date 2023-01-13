@@ -41,11 +41,13 @@ class ModelPusher:
             transformer_path=self.model_resolver.get_latest_save_transformer_path()
             model_path=self.model_resolver.get_latest_save_model_path()
             target_encoder_path=self.model_resolver.get_latest_save_target_encoder_path()
+            input_feature_encoder_path = self.model_resolver.get_latest_save_input_feature_encoder_path()
 
 
             save_object(file_path=transformer_path, obj=transformer)
             save_object(file_path=model_path, obj=model)
             save_object(file_path=target_encoder_path, obj=target_encoder)
+            save_object(file_path=input_feature_encoder_path, obj= input_feature_encoder)
 
             model_pusher_artifact = ModelPusherArtifact(pusher_model_dir=self.model_pusher_config.pusher_model_dir,
              saved_model_dir=self.model_pusher_config.saved_model_dir)

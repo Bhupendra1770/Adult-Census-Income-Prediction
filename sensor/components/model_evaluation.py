@@ -64,24 +64,31 @@ class ModelEvaluation:
             current_model  = load_object(file_path=self.model_trainer_artifact.model_path)
             current_target_encoder = load_object(file_path=self.data_transformation_artifact.target_encoder_path)
             current_input_feature_encoder = load_object(file_path=self.data_transformation_artifact.input_feature_encoder_path)
+
+          
             
 
 
-            ##test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)  #original 
-            test_df = pd.read_csv(self.data_transformation_artifact.transformed_test_path)  #testing purpose
+            test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)  #original 
+            ##test_df = pd.read_csv(self.data_transformation_artifact.transformed_test_path)  #testing purpose
+            #copy test_df for current accuracy
+            test_df_copy = test_df.copy() 
+
+            #########################################################################################
+            cat_col=[]
+            for i in test_df.columns:
+                if test_df[i].dtype=='object':
+                    cat_col.append(i) 
+
+            for i in cat_col:
+                test_df[i]= input_feature_encoder.fit_transform(test_df[i])          
+            #########################################################################################            
             
             
             target_df = test_df[TARGET_COLUMN]
-            y_true =target_encoder.transform(target_df)
-            #########################################################################################
-            #cat_col=[]
-            #for i in test_df.columns:
-                #if test_df[i].dtype=='object':
-                    #cat_col.append(i) 
+            y_true =target_encoder.fit_transform(target_df)
+            print(y_true)
 
-            #for i in cat_col:
-                #test_df[i]= input_feature_encoder.fit_transform(test_df[i])          
-            #########################################################################################
 
 
             # accuracy using previous trained model
@@ -92,12 +99,26 @@ class ModelEvaluation:
             print(f"Prediction using previous model: {target_encoder.inverse_transform(y_pred[:5])}")
             previous_model_score = f1_score(y_true=y_true, y_pred=y_pred)
             logging.info(f"Accuracy using previous trained model: {previous_model_score}")
-           
+
+
+
+            #test_df_copy
+            #########################################################################################
+            cat_col=[]
+            for i in test_df_copy.columns:
+                if test_df_copy[i].dtype=='object':
+                    cat_col.append(i) 
+
+            for i in cat_col:
+                test_df_copy[i]= current_input_feature_encoder.fit_transform(test_df_copy[i])          
+            #########################################################################################  
+
+
             # accuracy using current trained model
             input_feature_name = list(current_transformer.feature_names_in_)
-            input_arr =current_transformer.transform(test_df[input_feature_name])
+            input_arr =current_transformer.transform(test_df_copy[input_feature_name])
             y_pred = current_model.predict(input_arr)
-            y_true =current_target_encoder.transform(target_df)
+            y_true =current_target_encoder.fit_transform(target_df)
             print(f"Prediction using trained model: {current_target_encoder.inverse_transform(y_pred[:5])}")
             current_model_score = f1_score(y_true=y_true, y_pred=y_pred)
             logging.info(f"Accuracy using current trained model: {current_model_score}")
