@@ -38,32 +38,16 @@ def start_batch_prediction(input_file_path):
         # input featur encoding
         logging.info(f"Loading input_encoder to encode dataset")
         df_copy = df.copy()
-        ##########droping dependent column
-        #df.drop('salary',axis=1)
+   
 
-######################################################################################################################
-
-        #input_feature_encoder = LabelEncoder()
-
-        #cat_col=[]
-        #for i in df_copy.columns:
-            #if df_copy[i].dtype=='object':
-                #cat_col.append(i) 
-
-        #for i in cat_col:
-            #df_copy[i]= input_feature_encoder.fit_transform(df_copy[i])
-
-#########################################################################################################################
         input_feature_encoder = load_object(file_path=model_resolver.get_latest_input_feature_encoder_path()) 
 
         #for test_df
-        #df_copy.drop('salary',axis=1,inplace=True)
         cat_col=[]
         for i in df_copy.columns:
             if df_copy[i].dtype=='object':
                 cat_col.append(i)
         data_categorical = df_copy[cat_col]
-        #data_categorical.head()
 
 
         data_encoded = input_feature_encoder.transform(data_categorical)
@@ -71,15 +55,9 @@ def start_batch_prediction(input_file_path):
         a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
         'relationship', 'race', 'sex', 'country'])
         b = df[['age','hours-per-week']]
-        #c=data['hours-per-week']
         df_copy = pd.concat([a,b],axis=1)  
         df_copy.dropna(inplace=True)
-        #print(df_copy.isnull().sum())
-        #print(df_copy.shape,'copy data')
-        #print(df_copy.head())
-        #print(df.shape,'original data')
-        #print(df.head())
-##########################################################################################################################################################################################################################################################################################################
+
         #validation
         
         logging.info(f"Loading transformer to transform dataset")
@@ -108,20 +86,16 @@ def start_batch_prediction(input_file_path):
         local_df = pd.DataFrame(local_df_decode,columns=['workclass', 'education', 'marital-status', 'occupation',
         'relationship', 'race', 'sex', 'country'])
         local_df.reset_index(inplace=True)
-        #print(local_df.shape,'localdf')
 
         remain_col = df_copy[['age','hours-per-week']]
         remain_col.reset_index(inplace=True)
-        #print(remain_col.shape,'remain_col')
         df_copy = pd.concat([local_df,remain_col],axis=1)
         df_copy.drop('index',axis=1,inplace=True)
-        #testing.dropna(inplace=True)
-        #print(testing.shape,'testing')
+
         
 
         df_copy["prediction"]=prediction1
         df_copy["cat_pred"]=cat_prediction
-        #print(df_copy['prediction'].shape,'prediction')
 
 
         prediction_file_name = os.path.basename(input_file_path).replace(".csv",f"{datetime.now().strftime('%m%d%Y__%H%M%S')}.csv")

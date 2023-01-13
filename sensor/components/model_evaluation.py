@@ -70,11 +70,6 @@ class ModelEvaluation:
 
 
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)  #original 
-            ##test_df = pd.read_csv(self.data_transformation_artifact.transformed_test_path)  #testing purpose
-            #copy test_df for current accuracy
-            #test_df_copy = test_df.copy() 
-
-            #########################################################################################
             #for test_df
             test_df1 = test_df.copy()
             test_df1.drop('salary',axis=1,inplace=True)            
@@ -91,15 +86,6 @@ class ModelEvaluation:
             #c=data['hours-per-week']
             test_df = pd.concat([a,b],axis=1)     #test df
 
-            #cat_col=[]
-            #for i in test_df.columns:
-                #if test_df[i].dtype=='object':
-                    #cat_col.append(i) 
-
-            #for i in cat_col:
-                #test_df[i]= input_feature_encoder.fit_transform(test_df[i])          
-            #########################################################################################            
-            
             
             target_df = test_df[TARGET_COLUMN]
             y_true =target_encoder.fit_transform(target_df)
@@ -112,11 +98,9 @@ class ModelEvaluation:
             input_feature_name = list(transformer.feature_names_in_)
             input_arr =transformer.transform(test_df[input_feature_name])
             y_pred = model.predict(input_arr)
-            ################print(f"Prediction using previous model: {target_encoder.inverse_transform(y_pred[:5])}")
             previous_model_score = f1_score(y_true=y_true, y_pred=y_pred)
             logging.info(f"Accuracy using previous trained model: {previous_model_score}")
 
-            #########################################################################################
             
             #for current
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)  #original 
@@ -135,15 +119,7 @@ class ModelEvaluation:
             b = test_df[['age','hours-per-week','salary']]
             #c=data['hours-per-week']
             test_df = pd.concat([a,b],axis=1)     #test df            
-            
-            #cat_col=[]
-            #for i in test_df_copy.columns:
-                #if test_df_copy[i].dtype=='object':
-                    #cat_col.append(i) 
 
-            #for i in cat_col:
-                #test_df_copy[i]= current_input_feature_encoder.fit_transform(test_df_copy[i])          
-            #########################################################################################  
 
 
             # accuracy using current trained model

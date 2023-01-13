@@ -52,34 +52,6 @@ class DataTransformation:
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
 
             
-
-###################################################################################################################################
-
-            #using labelencoder converting cat columns to numerical
-            #cat_col=[]
-            #for i in input_feature_train_df.columns:
-                #if input_feature_train_df[i].dtype=='object':
-                    #cat_col.append(i)
-
-            #label_encoder1 = preprocessing.LabelEncoder()
-            #for i in cat_col:
-                #input_feature_train_df[i]= label_encoder1.fit_transform(input_feature_train_df[i])
-            #print(input_feature_train_df.head())
-            #for i in cat_col:               
-                #input_feature_test_df[i]= label_encoder1.fit_transform(input_feature_test_df[i])
- 
-            
-
-            #selecting target feature for train and test dataframe
-            #target_feature_train_df = train_df[TARGET_COLUMN]
-            #target_feature_test_df = test_df[TARGET_COLUMN]
-
-            #print(input_feature_train_df)
-            #print('###################################')
-            ##print(input_feature_test_df)
-            #print('########################################################')
-            #print(target_feature_train_df)
-#####################################################################################################################################
             train_df1 = train_df.copy()
             train_df1.drop('salary',axis=1,inplace=True)
             encoder = OrdinalEncoder()   #object
@@ -95,7 +67,6 @@ class DataTransformation:
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
             b = train_df[['age','hours-per-week','salary']]
-            #c=data['hours-per-week']
             train_df = pd.concat([a,b],axis=1)   #train df
 
   
@@ -119,7 +90,6 @@ class DataTransformation:
   
 
   
-  ##########################################################################################################################
   
             #selecting input feature for train and test dataframe
             input_feature_train_df=train_df.drop(TARGET_COLUMN,axis=1)
