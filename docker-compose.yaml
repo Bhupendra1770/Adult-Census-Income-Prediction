@@ -2,7 +2,7 @@ version: "2"
 services:
  application:
     image: ${IMAGE_NAME}
-    container_name: census17
+    container_name: c17_repo
     ports:
       - "8080:8080"
     environment:
