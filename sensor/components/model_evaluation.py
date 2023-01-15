@@ -83,13 +83,11 @@ class ModelEvaluation:
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
             b = test_df[['age','hours-per-week','salary']]
-            #c=data['hours-per-week']
             test_df = pd.concat([a,b],axis=1)     #test df
 
             
             target_df = test_df[TARGET_COLUMN]
             y_true =target_encoder.fit_transform(target_df)
-            #print(y_true)
 
 
 
@@ -117,7 +115,6 @@ class ModelEvaluation:
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
             b = test_df[['age','hours-per-week','salary']]
-            #c=data['hours-per-week']
             test_df = pd.concat([a,b],axis=1)     #test df            
 
 

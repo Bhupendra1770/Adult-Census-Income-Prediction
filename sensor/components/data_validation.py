@@ -8,6 +8,9 @@ import pandas as pd
 from sensor import utils
 import numpy as np
 from sensor.config import TARGET_COLUMN
+from sensor.utils import load_object
+from sensor.predictor import ModelResolver
+
 
 
 
@@ -81,7 +84,6 @@ class DataValidation:
 
             base_columns = base_df.columns
             current_columns = current_df.columns
-
             for base_column in base_columns:
                 base_data,current_data = base_df[base_column],current_df[base_column]
                 #Null hypothesis is that both column data drawn from same distrubtion
@@ -100,8 +102,8 @@ class DataValidation:
                         "pvalues":float(same_distribution.pvalue),
                         "same_distribution":False
                     }
-                    #different distribution
 
+                    #different distribution
             self.validation_error[report_key_name]=drift_report
         except Exception as e:
             raise SensorException(e, sys)
@@ -112,20 +114,102 @@ class DataValidation:
             base_df = pd.read_csv(self.data_validation_config.base_file_path)
             base_df.replace({"na":np.NAN},inplace=True)
             logging.info(f"Replace na value in base df")
+
+            #cleaning string in object columns in Base dataframe because we have to compare with my new data on the basis of my base data
+
+            for i in base_df.columns:
+                if base_df[i].dtype=='object':
+                    base_df[i] = base_df[i].str.strip()
+
+            #cleaning rows
+            l=[]
+            for i in base_df.columns:
+                for j in range(base_df.shape[0]):
+                    if base_df[i][j]=='?':
+                        l.append(j)
+            base_df.drop(index=l,inplace=True)  
+
+            #dropping some columns which we dont want
+            base_df.drop(['fnlwgt','capital-gain','capital-loss'],axis=1,inplace=True)  
+            base_df1 = base_df.copy()
+            base_df1.drop('salary',axis=1,inplace=True)
+            #data.drop('salary',axis=1,inplace=True)
+            cat_col=[]
+            for i in base_df1.columns:
+                if base_df1[i].dtype=='object':
+                    cat_col.append(i)
+            data_categorical = base_df1[cat_col]
+
+            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            data_encoded = input_feature_encoder.fit_transform(data_categorical)
+            a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
+            'relationship', 'race', 'sex', 'country'])
+            a.reset_index(inplace=True)
+            a.drop('index',axis=1,inplace=True)
+            b = base_df[['age','hours-per-week']]
+            b.reset_index(inplace=True)
+            b.drop('index',axis=1,inplace=True)
+            base_df = pd.concat([a,b],axis=1)   #base df is ready
+            base_df.dropna(inplace=True)
+        
+
             #base_df has na as null
             logging.info(f"Drop null values colums from base df")
             base_df=self.drop_missing_values_columns(df=base_df,report_key_name="missing_values_within_base_dataset")
 
+
+
             logging.info(f"Reading train dataframe")
+
             train_df = pd.read_csv(self.data_ingestion_artifact.train_file_path)
+            train_df1 = train_df.copy()
+            train_df1.drop('salary',axis=1,inplace=True)
+            cat_col=[]
+            for i in train_df1.columns:
+                if train_df1[i].dtype=='object':
+                    cat_col.append(i)
+            data_categorical = train_df1[cat_col]
+
+            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            data_encoded = input_feature_encoder.fit_transform(data_categorical)
+            a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
+            'relationship', 'race', 'sex', 'country'])
+            b = train_df[['age','hours-per-week']]
+            train_df = pd.concat([a,b],axis=1)   #train df
+
+
+
+            #test df
             logging.info(f"Reading test dataframe")
             test_df = pd.read_csv(self.data_ingestion_artifact.test_file_path)
+            test_df1 = test_df.copy()
+            test_df1.drop('salary',axis=1,inplace=True)
+            cat_col=[]
+            for i in test_df1.columns:
+                if test_df1[i].dtype=='object':
+                    cat_col.append(i)
+            data_categorical = test_df1[cat_col]
+            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            data_encoded = input_feature_encoder.transform(data_categorical)
+
+            a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
+            'relationship', 'race', 'sex', 'country'])
+            b = test_df[['age','hours-per-week']]
+            test_df = pd.concat([a,b],axis=1)     #test df
+
+
 
             logging.info(f"Drop null values colums from train df")
             train_df = self.drop_missing_values_columns(df=train_df,report_key_name="missing_values_within_train_dataset")
             logging.info(f"Drop null values colums from test df")
             test_df = self.drop_missing_values_columns(df=test_df,report_key_name="missing_values_within_test_dataset")
-            
+
+
+
+
             exclude_columns = [TARGET_COLUMN]
             base_df = utils.convert_columns_float(df=base_df, exclude_columns=exclude_columns)
             train_df = utils.convert_columns_float(df=train_df, exclude_columns=exclude_columns)
