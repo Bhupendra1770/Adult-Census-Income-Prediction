@@ -1,12 +1,12 @@
-from sensor.predictor import ModelResolver
-from sensor.entity import config_entity,artifact_entity
-from sensor.exception import SensorException
-from sensor.logger import logging
-from sensor.utils import load_object
+from Census.predictor import ModelResolver
+from Census.entity import config_entity,artifact_entity
+from Census.exception import SensorException
+from Census.logger import logging
+from Census.utils import load_object
 from sklearn.metrics import f1_score
 import pandas  as pd
 import sys,os
-from sensor.config import TARGET_COLUMN
+from Census.config import TARGET_COLUMN
 class ModelEvaluation:
 
     def __init__(self,

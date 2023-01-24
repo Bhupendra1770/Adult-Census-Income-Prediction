@@ -1,15 +1,15 @@
-from sensor.entity import artifact_entity,config_entity
-from sensor.exception import SensorException
-from sensor.logger import logging
+from Census.entity import artifact_entity,config_entity
+from Census.exception import SensorException
+from Census.logger import logging
 from scipy.stats import ks_2samp
 from typing import Optional
 import os,sys 
 import pandas as pd
-from sensor import utils
+from Census import utils
 import numpy as np
-from sensor.config import TARGET_COLUMN
-from sensor.utils import load_object
-from sensor.predictor import ModelResolver
+from Census.config import TARGET_COLUMN
+from Census.utils import load_object
+from Census.predictor import ModelResolver
 
 
 
@@ -145,11 +145,12 @@ class DataValidation:
             data_encoded = input_feature_encoder.fit_transform(data_categorical)
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
-            a.reset_index(inplace=True)
-            a.drop('index',axis=1,inplace=True)
+            #a.reset_index(inplace=True)
+            #a.drop('index',axis=1,inplace=True)
             b = base_df[['age','hours-per-week']]
-            b.reset_index(inplace=True)
-            b.drop('index',axis=1,inplace=True)
+            print(b.head())
+            #b.reset_index(inplace=True)
+            #b.drop('index',axis=1,inplace=True)
             base_df = pd.concat([a,b],axis=1)   #base df is ready
             base_df.dropna(inplace=True)
         

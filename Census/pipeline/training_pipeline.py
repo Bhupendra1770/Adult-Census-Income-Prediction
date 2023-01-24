@@ -1,14 +1,14 @@
-from sensor.logger import logging
-from sensor.exception import SensorException
-from sensor.utils import get_collection_as_dataframe
+from Census.logger import logging
+from Census.exception import SensorException
+from Census.utils import get_collection_as_dataframe
 import sys,os
-from sensor.entity import config_entity
-from sensor.components.data_ingestion import DataIngestion
-from sensor.components.data_validation import DataValidation
-from sensor.components.data_transformation import DataTransformation
-from sensor.components.model_trainer import ModelTrainer
-from sensor.components.model_evaluation import ModelEvaluation
-from sensor.components.model_pusher import ModelPusher
+from Census.entity import config_entity
+from Census.components.data_ingestion import DataIngestion
+from Census.components.data_validation import DataValidation
+from Census.components.data_transformation import DataTransformation
+from Census.components.model_trainer import ModelTrainer
+from Census.components.model_evaluation import ModelEvaluation
+from Census.components.model_pusher import ModelPusher
 
 
 def start_training_pipeline():

@@ -1,8 +1,8 @@
-from sensor.exception import SensorException
-from sensor.logger import logging
-from sensor.predictor import ModelResolver
+from Census.exception import SensorException
+from Census.logger import logging
+from Census.predictor import ModelResolver
 import pandas as pd
-from sensor.utils import load_object
+from Census.utils import load_object
 import os,sys
 from datetime import datetime
 PREDICTION_DIR="prediction"

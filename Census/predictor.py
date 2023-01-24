@@ -1,5 +1,5 @@
 import os
-from sensor.entity.config_entity import TRANSFORMER_OBJECT_FILE_NAME,MODEL_FILE_NAME,TARGET_ENCODER_OBJECT_FILE_NAME,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME
+from Census.entity.config_entity import TRANSFORMER_OBJECT_FILE_NAME,MODEL_FILE_NAME,TARGET_ENCODER_OBJECT_FILE_NAME,INPUT_FEATURE_ENCODER_OBJECT_FILE_NAME
 from glob import glob
 from typing import Optional
 import os

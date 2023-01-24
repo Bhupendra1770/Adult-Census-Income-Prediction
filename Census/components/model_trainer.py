@@ -1,11 +1,11 @@
-from sensor.entity import artifact_entity,config_entity
-from sensor.exception import SensorException
-from sensor.logger import logging
+from Census.entity import artifact_entity,config_entity
+from Census.exception import SensorException
+from Census.logger import logging
 from typing import Optional
 from sklearn.ensemble import RandomForestClassifier
 import os,sys 
 #from xgboost import XGBClassifier
-from sensor import utils
+from Census import utils
 from sklearn.metrics import f1_score
 
 

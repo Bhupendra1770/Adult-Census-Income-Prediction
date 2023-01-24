@@ -1,6 +1,6 @@
 import os,sys
-from sensor.exception import SensorException
-from sensor.logger import logging
+from Census.exception import SensorException
+from Census.logger import logging
 from datetime import datetime
 
 FILE_NAME = "adult.csv"
