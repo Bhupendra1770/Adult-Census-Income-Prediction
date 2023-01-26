@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator
 
 
 with DAG(
-    'census_training',
+    'census-training',
     default_args={'retries': 2},
     # [END default_args]
     description='Adult census income prediction',
@@ -20,7 +20,7 @@ with DAG(
 
     
     def training(**kwargs):
-        from sensor.pipeline.training_pipeline import start_training_pipeline
+        from Census.pipeline.training_pipeline import start_training_pipeline
         start_training_pipeline()
     
     def sync_artifact_to_s3_bucket(**kwargs):
