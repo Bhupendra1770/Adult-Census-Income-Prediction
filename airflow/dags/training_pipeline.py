@@ -7,6 +7,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 
+
 with DAG(
     'census-training',
     default_args={'retries': 2},
