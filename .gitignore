@@ -10,6 +10,7 @@ log
 notebook
 prediction
 saved_models
+batch_prediction.py
 *.egg-info
 .env
 data_dump.py
