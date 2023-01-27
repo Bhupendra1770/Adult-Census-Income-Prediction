@@ -4,6 +4,7 @@ from Census.exception import SensorException
 from Census.logger import logging
 from Census.utils import load_object
 from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score
 import pandas  as pd
 import sys,os
 from Census.config import TARGET_COLUMN
@@ -96,7 +97,7 @@ class ModelEvaluation:
             input_feature_name = list(transformer.feature_names_in_)
             input_arr =transformer.transform(test_df[input_feature_name])
             y_pred = model.predict(input_arr)
-            previous_model_score = f1_score(y_true=y_true, y_pred=y_pred)
+            previous_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
             logging.info(f"Accuracy using previous trained model: {previous_model_score}")
 
             
@@ -125,7 +126,7 @@ class ModelEvaluation:
             y_pred = current_model.predict(input_arr)
             y_true =current_target_encoder.fit_transform(target_df)
             #print(f"Prediction using trained model: {current_target_encoder.inverse_transform(y_pred[:5])}")
-            current_model_score = f1_score(y_true=y_true, y_pred=y_pred)
+            current_model_score = accuracy_score(y_true=y_true, y_pred=y_pred)
             logging.info(f"Accuracy using current trained model: {current_model_score}")
             if current_model_score<=previous_model_score:
                 logging.info(f"Current trained model is not better than previous model")
@@ -137,5 +138,4 @@ class ModelEvaluation:
             return model_eval_artifact
         except Exception as e:
             raise SensorException(e,sys)
-
 
