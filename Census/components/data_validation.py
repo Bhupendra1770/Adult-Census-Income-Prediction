@@ -9,7 +9,8 @@ from Census import utils
 import numpy as np
 from Census.config import TARGET_COLUMN
 from Census.utils import load_object
-from Census.predictor import ModelResolver
+#from Census.predictor import ModelResolver
+from sklearn.preprocessing import OrdinalEncoder
 
 
 
@@ -140,8 +141,9 @@ class DataValidation:
                     cat_col.append(i)
             data_categorical = base_df1[cat_col]
 
-            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
-            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            #input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            #input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            input_feature_encoder = OrdinalEncoder()
             data_encoded = input_feature_encoder.fit_transform(data_categorical)
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
@@ -172,8 +174,8 @@ class DataValidation:
                     cat_col.append(i)
             data_categorical = train_df1[cat_col]
 
-            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
-            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            #input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            #input_feature_encoder = load_object(file_path=input_feature_encoder_path)
             data_encoded = input_feature_encoder.fit_transform(data_categorical)
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
             'relationship', 'race', 'sex', 'country'])
@@ -192,8 +194,8 @@ class DataValidation:
                 if test_df1[i].dtype=='object':
                     cat_col.append(i)
             data_categorical = test_df1[cat_col]
-            input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
-            input_feature_encoder = load_object(file_path=input_feature_encoder_path)
+            #input_feature_encoder_path = ModelResolver().get_latest_input_feature_encoder_path()
+            #input_feature_encoder = load_object(file_path=input_feature_encoder_path)
             data_encoded = input_feature_encoder.transform(data_categorical)
 
             a = pd.DataFrame(data_encoded,columns=['workclass', 'education', 'marital-status', 'occupation',
