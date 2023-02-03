@@ -18,10 +18,10 @@ def get_requirements()->List[str]:
 
 
 setup(
-    name="sensor",
+    name="Census",
     version="0.0.2",
-    author="ineuron",
-    author_email="avnish@ineuron.ai",
+    author="Bhupendra",
+    author_email="bhupendra360i@gmail.com",
     packages = find_packages(),
     install_requires=get_requirements(),
 )
